@@ -11,6 +11,8 @@ class SP{
     public $masp;
     public $tensp;
     public $gia;
+
+    public $giamgia;
     public $khuyenmai;
     public $hinh;
     public $malsp;
@@ -26,6 +28,9 @@ class SP{
 
     function set_masp($name) {
         $this->masp = $name;
+      }
+      function set_giamgia($name) {
+        $this->giamgia = $name;
       }
       function set_malsp($name) {
         $this->malsp = $name;
@@ -58,7 +63,7 @@ class SP{
         $this->uudai = $name;;
       }
       function set_soLuong($name){
-        $this->soLuong = $name;;
+        $this->soLuong = $name;
       }
 
 
@@ -71,18 +76,18 @@ function showProduct(){
 }
 
 function ConnectDB(){
-    $servername = "localhost";
+    $servername = "127.0.0.1";
     $username = "root";
     $password = "";
     $dbname = "projectforweb";
+    $port = 3307;
 
     // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli($servername, $username, $password, $dbname, $port);
     // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-
     return $conn;
 }
 

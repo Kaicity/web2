@@ -6,13 +6,12 @@ $conn = connectDB();
 
 $title="??";
 $sql="??";
-$count=' ';
-
-  $sql = checkTypeAction($title,$count);
-
-  $number=$conn->query($count);
+$count='';
+$sql = checkTypeAction($title,$count);
+echo $sql;
+$number=$conn->query($count);
   
-  $temp=$number->fetch_assoc();
+$temp=$number->fetch_assoc();
   // echo ($temp['num']) ;
 
 
@@ -128,8 +127,12 @@ $conn->close();
 
 $row=$result->fetch_assoc();
 if($row==null){
-  $tag="Location: sanphamrong.php?&result=sản phẩm này";  
-  header($tag);
+  // echo "vo day";
+  // $tag="Location: sanphamrong.php?&result=sản phẩm này";  
+  // #header($tag);
+  // header("Location: sanphamrong.php");
+  // exit;
+  
 }
 
 

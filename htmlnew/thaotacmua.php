@@ -1,5 +1,6 @@
 <?php 
 require_once("library.php");
+require_once("util.php");
 
 if(isset($_REQUEST["code"])){
     if(!isset($_SESSION["cart"])){
@@ -7,27 +8,30 @@ if(isset($_REQUEST["code"])){
     }
     
         $conn= ConnectDB();
-        $sql="select gia from sanpham where masp=".$_REQUEST["code"];
+        $sql="select gia, giamgia from sanpham where masp=".$_REQUEST["code"];
         $result=$conn->query($sql);
         $row=$result->fetch_assoc();
         $code = $_REQUEST["code"];
         $gia =0;
+        $giamgia =0;
         if($row!=null){
             $gia=$row['gia'];
+            $giamgia=$row['giamgia'];
         }
         $temp=new SP();
         $temp->set_masp($code);
         $temp->set_Soluong("1");
         
         $temp->set_gia($gia);
+        $temp->set_giamgia($giamgia);
         addToCart($temp);
 
         echo count($_SESSION["cart"]);
         echo "<br>".$_SESSION["cart"][0]->masp;
         echo "<br>".$_SESSION["cart"][0]->gia;
+        echo "<br>".$_SESSION["cart"][0]->giamgia;
         
-    
-    header("location: giohang.php");
+        header("location: giohang.php");
 }
 
 if(isset($_REQUEST['SPbiXoa'])){
@@ -64,25 +68,27 @@ if(isset($_POST["mua"])){
     $conn=ConnectDB();
     $sum=0;
     
+    $bill_id = randomUUID();
+
     if(count($_SESSION["cart"])!=0){
         foreach($_SESSION["cart"] as $i){
-            $sum = $sum +($i->gia * $i->soLuong);
-
+            if($i->giamgia != null & $i->giamgia < $i->gia)
+                $sum = $sum + ($i->giamgia * $i->soLuong);
+            if($i->giamgia != null & $i->giamgia == $i->gia)
+                $sum = $sum + ($i->gia * $i->soLuong);
         }
+        $sql1=sprintf("insert into bill values('%s','%s',%d,'%s','%s','%s','0')",$bill_id,$date,$sum,$_POST['texta'],$_POST['textb'],$_POST['textc']);
         
-        $sql1=sprintf("insert into bill values(null,'%s','%s','%s','%s','%s',false)",$date,$sum,$_POST['texta'],$_POST['textb'],$_POST['textc']);
         $result=$conn->query($sql1);
         if ($result == false) {
            echo "error!";
             exit();
         }
-        $result=$conn->query("select mabill from bill order by mabill desc ");
-        $row=$result->fetch_assoc();
-        $mabill=$row['mabill'];
 
 
         foreach($_SESSION["cart"] as $i){
-            $sql2=sprintf("insert into chitietbill values('%s','%s','%s')",$mabill,$i->masp,$i->soLuong);
+            $id_chitiet = randomUUID();
+            $sql2=sprintf("insert into chitietbill values('%s','%s','%s','%s')",$id_chitiet,$bill_id,$i->masp,$i->soLuong);
             $result=$conn->query($sql2);
         }
         $_SESSION['cart']=array();
