@@ -115,9 +115,10 @@ function checkTypeAction(&$title,&$count){
 }
 function checkTypeProduct(&$title,&$count){
     $sql ="";
+    $product_per_page = 6;
     if(isset($_REQUEST['page'])){
-    $start=$_REQUEST['page']*6-6;
-    $end=$_REQUEST['page']*6;
+    $start=$_REQUEST['page']*$product_per_page-$product_per_page;
+    $end=$product_per_page;
     }
     else{
         $start=0;
@@ -132,17 +133,19 @@ function checkTypeProduct(&$title,&$count){
                                 limit ".$start.",".$end;
             $count= "SELECT count(*)as num FROM sanpham, loaisp
             where sanpham.MALSP=loaisp.MALSP and sanpham.MAlSP='00001'";
-                                
+                                       
             $title="phone";
         }
         else if($_REQUEST['productType']=='All'){
+         
             $sql = "SELECT * FROM sanpham, loaisp
             where sanpham.MALSP=loaisp.MALSP 
                                 order by Rand()
                                 limit ".$start.",".$end;
              $count= "SELECT count(*) as num FROM sanpham, loaisp
              where sanpham.MALSP=loaisp.MALSP ";
-                                 
+                            // echo $sql;
+                            // exit;      
               $title="All";
           }
         else if($_REQUEST['productType']=='laptop'){
