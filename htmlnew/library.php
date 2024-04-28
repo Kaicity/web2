@@ -76,11 +76,12 @@ function showProduct(){
 }
 
 function ConnectDB(){
-    $servername = "127.0.0.1";
+    #$servername = "127.0.0.1";
+    $servername="localhost";
     $username = "root";
     $password = "";
     $dbname = "projectforweb";
-    $port = 3307;
+    $port = 3309;
 
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname, $port);
@@ -236,5 +237,16 @@ function checkConnectFromAnotherPHP(&$sql,&$title){
 }
 
 
-
+function getAllProductQuery($current_page){
+  $product_per_page = 20;
+ 
+  $start=$current_page*$product_per_page-$product_per_page;
+  $end=$product_per_page;
+  
+  $sql = "SELECT * FROM sanpham, loaisp
+  where sanpham.MALSP=loaisp.MALSP 
+                      
+                      limit ".$start.",".$end;
+  return $sql;
+}
 ?>
